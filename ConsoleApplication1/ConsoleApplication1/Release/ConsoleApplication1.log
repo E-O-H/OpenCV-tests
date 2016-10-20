@@ -1,0 +1,12 @@
+﻿  stdafx.cpp
+  ConsoleApplication1.cpp
+  Generating code
+  All 82 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  ConsoleApplication1.vcxproj -> C:\Users\tange\Documents\Visual Studio 2015\Projects\ConsoleApplication1\Release\ConsoleApplication1.exe
+d:\my_bin\opencv\build\include\opencv2\core\operations.hpp(228): warning C6294: Ill-defined for-loop:  initial condition does not satisfy test.  Loop body not executed.
+d:\my_bin\opencv\build\include\opencv2\core\operations.hpp(228): warning C6201: Index '3' is out of valid index range '0' to '2' for possibly stack allocated buffer 'this->val'.
+d:\my_bin\opencv\build\include\opencv2\core\operations.hpp(221): warning C6294: Ill-defined for-loop:  initial condition does not satisfy test.  Loop body not executed.
+d:\my_bin\opencv\build\include\opencv2\core\operations.hpp(221): warning C6201: Index '2' is out of valid index range '0' to '1' for possibly stack allocated buffer 'this->val'.
+d:\my_bin\opencv\build\include\opencv2\core\operations.hpp(235): warning C6294: Ill-defined for-loop:  initial condition does not satisfy test.  Loop body not executed.
+d:\my_bin\opencv\build\include\opencv2\core\operations.hpp(235): warning C6201: Index '4' is out of valid index range '0' to '3' for possibly stack allocated buffer 'this->val'.
