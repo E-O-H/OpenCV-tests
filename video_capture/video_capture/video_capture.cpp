@@ -1,8 +1,10 @@
 // video_capture.cpp : Defines the entry point for the console application.
 //
-
 #include "stdafx.h"
 
+//#define DEBUG  // Comment this line if building release version.
+
+#ifdef DEBUG
 //debug:
 #pragma comment(lib, "opencv_calib3d2413d.lib")
 #pragma comment(lib, "opencv_contrib2413d.lib")
@@ -23,6 +25,29 @@
 #pragma comment(lib, "opencv_ts2413d.lib")
 #pragma comment(lib, "opencv_video2413d.lib")
 #pragma comment(lib, "opencv_videostab2413d.lib")
+#endif
+#ifndef DEBUG
+//release:
+#pragma comment(lib, "opencv_calib3d2413.lib")
+#pragma comment(lib, "opencv_contrib2413.lib")
+#pragma comment(lib, "opencv_core2413.lib")
+#pragma comment(lib, "opencv_features2d2413.lib")
+#pragma comment(lib, "opencv_flann2413.lib")
+#pragma comment(lib, "opencv_gpu2413.lib")
+#pragma comment(lib, "opencv_highgui2413.lib")
+#pragma comment(lib, "opencv_imgproc2413.lib")
+#pragma comment(lib, "opencv_legacy2413.lib")
+#pragma comment(lib, "opencv_ml2413.lib")
+#pragma comment(lib, "opencv_nonfree2413.lib")
+#pragma comment(lib, "opencv_objdetect2413.lib")
+#pragma comment(lib, "opencv_ocl2413.lib")
+#pragma comment(lib, "opencv_photo2413.lib")
+#pragma comment(lib, "opencv_stitching2413.lib")
+#pragma comment(lib, "opencv_superres2413.lib")
+#pragma comment(lib, "opencv_ts2413.lib")
+#pragma comment(lib, "opencv_video2413.lib")
+#pragma comment(lib, "opencv_videostab2413.lib")
+#endif
 
 #include "opencv2/opencv.hpp"
 using namespace cv;
@@ -53,7 +78,7 @@ int main(int argc, char** argv) {
 			1, // Thickness
 			CV_AA); // Anti-alias
 		imshow("video title", frame);
-		if (waitKey(1) == 27) break; // stop capturing by pressing ESC 
+		if (waitKey(1) == 27) break; // press ESC to exit
 	}
 	return 0;
 }
