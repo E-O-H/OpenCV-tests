@@ -58,6 +58,9 @@ int main(size_t argc, char ** argv)
 	cv::namedWindow("Image");
 	cv::imshow("Image", image);
 
+	//cv::namedWindow("result");
+	//cv::imshow("result", result);
+
 	// display result
 	cv::namedWindow("Segmented Image");
 	cv::imshow("Segmented Image", foreground);

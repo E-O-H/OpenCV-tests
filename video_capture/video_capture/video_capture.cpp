@@ -49,7 +49,7 @@
 #pragma comment(lib, "opencv_videostab2413.lib")
 #endif
 
-#include "opencv2/opencv.hpp"
+#include <opencv2/opencv.hpp>
 using namespace cv;
 
 
