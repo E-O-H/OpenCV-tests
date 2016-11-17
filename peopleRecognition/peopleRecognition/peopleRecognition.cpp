@@ -2,7 +2,7 @@
 //
 #include "stdafx.h"
 
-#define DEBUG  // Comment this line if building release version.
+//#define DEBUG  // Comment this line if building release version.
 
 #ifdef DEBUG
 //debug:
@@ -65,7 +65,13 @@ int main(int argc, const char * argv[])
 
 	Mat img;
 	HOGDescriptor hog;
-	hog.setSVMDetector(HOGDescriptor::getDefaultPeopleDetector());
+
+	vector<float> detector = HOGDescriptor::getDefaultPeopleDetector();
+	if (!detector.size()) {
+		fprintf(stderr, "ERROR: getDefaultPeopleDetector returned NULL\n");
+		return -1;
+	}
+	hog.setSVMDetector(detector);
 
 	namedWindow("video capture", CV_WINDOW_AUTOSIZE);
 	while (true)
@@ -74,9 +80,9 @@ int main(int argc, const char * argv[])
 		if (!img.data)
 			continue;
 
-		vector<Rect> found, found_filtered;
+		vector<Rect> found, found_filtered; 
 		hog.detectMultiScale(img, found, 0, Size(8, 8), Size(32, 32), 1.05, 2);
-
+		
 		size_t i, j;
 		for (i = 0; i<found.size(); i++)
 		{
