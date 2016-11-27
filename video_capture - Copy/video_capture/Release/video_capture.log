@@ -1,7 +1,7 @@
 ﻿  video_capture.cpp
   Generating code
-  2 of 111 functions ( 1.8%) were compiled, the rest were copied from previous compilation.
+  2 of 85 functions ( 2.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    3 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   video_capture.vcxproj -> D:\Billy\b编程练习\C++\OpenCV tests\video_capture - Copy\Release\video_capture.exe

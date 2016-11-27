@@ -50,28 +50,22 @@
 #endif
 
 #include <opencv2/opencv.hpp>
-using namespace cv;
 
-
-int main(int argc, char** argv) {
-	VideoCapture cap;
+int main() {
+	cv::VideoCapture cap;
 	// open the default camera, use something different from 0 otherwise;
 	// Check VideoCapture documentation.
 	if (!cap.open(0))
 		return 0;
 
-	// text to display
-	string text;
-	int pos_x, pos_y;
-	std::cin >> text >> pos_x >> pos_y;
-
-	Mat frame;
+	cv::Mat frame, sample;
 	cap >> frame; // For determining the dimension of the captured video.
 	// define bounding rectangle 
-	cv::Rect rectangle(50, 0, frame.cols - 150, frame.rows - 30);
+	cv::Rect rectangle(50, 10, 220, 230);
 
-	cv::Mat result; // segmentation result (4 possible values)
-	cv::Mat bgModel, fgModel; // the models (internally used)
+	cv::Mat mask; // segmentation mask (4 possible values)
+	cv::Mat bgModel, fgModel; // the models (internally used by algorithm)
+	cv::Size sampleSize(320, 240);
 
 	while (true) {
 		cap >> frame;
@@ -85,25 +79,25 @@ int main(int argc, char** argv) {
 			1, // Thickness
 			CV_AA); // Anti-alias
 		*/
-
+		cv::resize(frame, sample, sampleSize);
 								  // GrabCut segmentation
-		cv::grabCut(frame,    // input image
-			result,   // segmentation result
+		cv::grabCut(sample,    // input image
+			mask,   // mask and segmentation result
 			rectangle,// rectangle containing foreground 
 			bgModel, fgModel, // models
 			1,        // number of iterations
 			cv::GC_INIT_WITH_RECT); // use rectangle
 									// Get the pixels marked as likely foreground
-		cv::compare(result, cv::GC_PR_FGD, result, cv::CMP_EQ);
+		cv::compare(mask, cv::GC_PR_FGD, mask, cv::CMP_EQ);
 		// Generate output image
-		cv::Mat foreground(frame.size(), CV_8UC3, cv::Scalar(255, 255, 255));
-		frame.copyTo(foreground, result); // bg pixels not copied
+		cv::Mat foreground(sample.size(), CV_8UC3, cv::Scalar(255, 255, 255));
+		sample.copyTo(foreground, mask); // bg pixels not copied
 
-		cv::rectangle(foreground, rectangle, cv::Scalar(255, 255, 255), 1);
+		//cv::rectangle(foreground, rectangle, cv::Scalar(255, 255, 0), 1);
 
 		// display result
 		cv::imshow("video cut", foreground);
-		if (waitKey(1) == 27) break; // press ESC to exit
+		if (cv::waitKey(1) == 27) break; // press ESC to exit
 	}
 	return 0;
 }
