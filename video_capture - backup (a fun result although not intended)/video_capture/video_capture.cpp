@@ -54,39 +54,39 @@
 #define RATIO 2 // frame_resolution / sample_resolution
 
 int main() {
-	cv::VideoCapture cap;
-	// open the default camera, use something different from 0 otherwise;
-	// Check VideoCapture documentation.
-	if (!cap.open(0))
-		return 0;
-	cv::Mat frame, sample;
-	cap >> frame; // For determining the dimension of the captured video.
-    cv::Size sampleSize(frame.cols / RATIO , frame.rows / RATIO);
+    cv::VideoCapture cap;
+    // open the default camera, use something different from 0 otherwise;
+    // Check VideoCapture documentation.
+    if (!cap.open(0))
+        return 0;
+    cv::Mat frame, sample;
+    cap >> frame; // For determining the dimension of the captured video.
+    cv::Size sampleSize(frame.cols / RATIO, frame.rows / RATIO);
 
-	// define bounding rectangle 
-	cv::Rect rectangle(50, 10, 220, 230);
+    // define bounding rectangle 
+    cv::Rect rectangle(50, 10, 220, 230);
 
-	cv::Mat mask(sampleSize.height, sampleSize.width, CV_8U); // segmentation mask (4 possible values)
+    cv::Mat mask(sampleSize.height, sampleSize.width, CV_8U); // segmentation mask (4 possible values)
     mask.setTo(cv::GC_PR_BGD);
-    
-	float fg_rect1_ratio_h = 0.8;
-	float fg_rect1_ratio_w = 0.1;
-	float fg_rect2_ratio_h = 0.4;
-	float fg_rect2_ratio_w = 0.4;
+
+    float fg_rect1_ratio_h = 0.8;
+    float fg_rect1_ratio_w = 0.1;
+    float fg_rect2_ratio_h = 0.4;
+    float fg_rect2_ratio_w = 0.4;
     cv::Rect fg_rect1(mask.cols / 2 - mask.cols * fg_rect1_ratio_w / 2,
-                      mask.rows * (1 - fg_rect1_ratio_h),
-                      mask.cols * fg_rect1_ratio_w,
-                      mask.rows * fg_rect1_ratio_h);
+        mask.rows * (1 - fg_rect1_ratio_h),
+        mask.cols * fg_rect1_ratio_w,
+        mask.rows * fg_rect1_ratio_h);
     cv::Rect fg_rect2(mask.cols / 2 - mask.cols * fg_rect2_ratio_w / 2,
-                      mask.rows * (1 - fg_rect2_ratio_h),
-                      mask.cols * fg_rect2_ratio_w,
-                      mask.rows * fg_rect2_ratio_h);
-	cv::Mat fg_area1 = mask(fg_rect1); // NOTE this is reference to subarray
+        mask.rows * (1 - fg_rect2_ratio_h),
+        mask.cols * fg_rect2_ratio_w,
+        mask.rows * fg_rect2_ratio_h);
+    cv::Mat fg_area1 = mask(fg_rect1); // NOTE this is reference to subarray
     cv::Mat fg_area2 = mask(fg_rect2);
     // mark as foreground
     fg_area1.setTo(cv::GC_FGD);
     fg_area2.setTo(cv::GC_FGD);
-    
+
     float bg_rect1_ratio_h = 0.5; // top-left bg
     float bg_rect1_ratio_w = 0.3;
     float bg_rect2_ratio_h = 0.5; // top-right bg
@@ -96,21 +96,21 @@ int main() {
     float bg_rect4_ratio_h = 0.5; // bottom-right bg
     float bg_rect4_ratio_w = 0.05;
     cv::Rect bg_rect1(0,
-                      0,
-                      mask.cols * bg_rect1_ratio_w,
-                      mask.rows * bg_rect1_ratio_h);
+        0,
+        mask.cols * bg_rect1_ratio_w,
+        mask.rows * bg_rect1_ratio_h);
     cv::Rect bg_rect2(mask.cols - mask.cols * bg_rect2_ratio_w,
-                      0,
-                      mask.cols * bg_rect2_ratio_w,
-                      mask.rows * bg_rect2_ratio_h);
+        0,
+        mask.cols * bg_rect2_ratio_w,
+        mask.rows * bg_rect2_ratio_h);
     cv::Rect bg_rect3(0,
-                      mask.rows - mask.rows * bg_rect3_ratio_h,
-                      mask.cols * bg_rect3_ratio_w,
-                      mask.rows * bg_rect3_ratio_h);
+        mask.rows - mask.rows * bg_rect3_ratio_h,
+        mask.cols * bg_rect3_ratio_w,
+        mask.rows * bg_rect3_ratio_h);
     cv::Rect bg_rect4(mask.cols - mask.cols * bg_rect4_ratio_w,
-                      mask.rows - mask.rows * bg_rect4_ratio_h,
-                      mask.cols * bg_rect4_ratio_w,
-                      mask.rows * bg_rect4_ratio_h);
+        mask.rows - mask.rows * bg_rect4_ratio_h,
+        mask.cols * bg_rect4_ratio_w,
+        mask.rows * bg_rect4_ratio_h);
     cv::Mat bg_area1 = mask(bg_rect1);
     cv::Mat bg_area2 = mask(bg_rect2);
     cv::Mat bg_area3 = mask(bg_rect3);
@@ -152,40 +152,43 @@ int main() {
     bg_rect4_stretched.height = bg_rect4.height  * RATIO;
     bg_rect4_stretched.width = bg_rect4.width  * RATIO;
     cv::Mat bgModel, fgModel; // the models (internally used by algorithm)
+
     while (true) {
-		cap >> frame;
-		if (frame.empty()) break; // end of video stream
+        cap >> frame;
+        if (frame.empty()) break; // end of video stream
         cv::resize(frame, sample, sampleSize);
-		/*cv::putText(frame,
-			text.c_str(),
-			cv::Point(pos_x, pos_y), // Coordinates
-			cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
-			2.0, // Scale 2x bigger
-			cv::Scalar(255, 255, 255), // Color
-			1, // Thickness
-			CV_AA); // Anti-alias
-		*/
-		cv::grabCut(sample,    // input sample of the original frame
-			mask,   // mask and segmentation result
-			rectangle,// rectangle containing foreground 
-			bgModel, fgModel, // models
-			1,        // number of iterations
-			cv::GC_INIT_WITH_MASK); // use mask
-        // Get all foreground and possible foreground pixels
+        /*cv::putText(frame,
+        text.c_str(),
+        cv::Point(pos_x, pos_y), // Coordinates
+        cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
+        2.0, // Scale 2x bigger
+        cv::Scalar(255, 255, 255), // Color
+        1, // Thickness
+        CV_AA); // Anti-alias
+        */
+        cv::grabCut(sample,    // input sample of the original frame
+            mask,   // mask and segmentation result
+            rectangle,// rectangle containing foreground 
+            bgModel, fgModel, // models
+            1,        // number of iterations
+            cv::GC_INIT_WITH_MASK); // use mask
+                                    // Get all foreground and possible foreground pixels
         cv::Mat result = (mask == cv::GC_FGD) | (mask == cv::GC_PR_FGD);
         // Stretch the resulting mask to original resolution
         cv::resize(result, result, frame.size());
-		// Generate output image
-		cv::Mat foreground(frame.size(), CV_8UC3, cv::Scalar(255, 255, 255));
-		frame.copyTo(foreground, result); // bg pixels not copied
+        // Generate output image
+        cv::Mat foreground(frame.size(), CV_8UC3, cv::Scalar(255, 255, 255));
+        frame.copyTo(foreground, result); // bg pixels not copied
 
+                                          // GaussianBlur
         foreground.convertTo(foreground, CV_32FC3, 1.0 / 255.0);
+        frame.convertTo(frame, CV_32FC3, 1.0 / 255.0);
         cv::Mat bg(foreground.size(), CV_32FC3);
         bg = cv::Scalar(1.0, 1.0, 1.0);
         // Prepare mask
         cv::Mat mask;
         cv::Mat img_gray;
-        cv::cvtColor(foreground, img_gray, cv::COLOR_BGR2GRAY);
+        cv::cvtColor(frame, img_gray, cv::COLOR_BGR2GRAY);
         img_gray.convertTo(mask, CV_32FC1);
         threshold(1.0 - mask, mask, 0.9, 1.0, cv::THRESH_BINARY_INV);
         cv::GaussianBlur(mask, mask, cv::Size(21, 21), 11.0);
@@ -203,7 +206,7 @@ int main() {
         cv::merge(ch_bg, bg);
 
         // draw rectangles
-		//cv::rectangle(foreground, rectangle_stretched, cv::Scalar(255, 255, 0), 1); // Outer rectangle
+        //cv::rectangle(foreground, rectangle_stretched, cv::Scalar(255, 255, 0), 1); // Outer rectangle
         cv::rectangle(foreground, fg_rect1_stretched, cv::Scalar(255, 255, 0), 1);
         cv::rectangle(foreground, fg_rect2_stretched, cv::Scalar(255, 255, 0), 1);
         cv::rectangle(foreground, bg_rect1_stretched, cv::Scalar(0, 0, 255), 1);
@@ -211,11 +214,11 @@ int main() {
         cv::rectangle(foreground, bg_rect3_stretched, cv::Scalar(0, 0, 255), 1);
         cv::rectangle(foreground, bg_rect4_stretched, cv::Scalar(0, 0, 255), 1);
 
-		// display result
+        // display result
         cv::imshow("video cut smoothed", res);
-		cv::imshow("video cut", foreground);
-		if (cv::waitKey(1) == 27) break; // press ESC to exit
-	}
-	return 0;
+        cv::imshow("video cut", foreground);
+        if (cv::waitKey(1) == 27) break; // press ESC to exit
+    }
+    return 0;
 }
 
