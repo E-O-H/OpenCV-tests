@@ -141,7 +141,7 @@ int main(int argc, char** argv) {
 		    // abs is very important! Or negative values will be treated as 0 in the mask
 		    // (no automatic overflow)
 		cv::Mat maskBinary;
-		cv::threshold(mask, maskBinary, 15, 255, cv::THRESH_BINARY);
+		cv::threshold(mask, maskBinary, 5, 255, cv::THRESH_BINARY);
 		//cv::adaptiveThreshold(mask, maskBinary, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 11, 2);
 		cv::Mat foreground;
 		frame.copyTo(foreground, maskBinary);

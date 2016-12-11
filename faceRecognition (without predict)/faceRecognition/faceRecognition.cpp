@@ -141,7 +141,7 @@ int main(int argc, const char *argv[]) {
 	//
 
 	if (argc != 2) {
-		cout << "You need to rovide a pre-trained haarcascade as the argument." << endl;
+		cout << "You need to provide a pre-trained haarcascade as the argument." << endl;
 		cout << "(Note to self) Use \"D:\\my_bin\\opencv\\build\\share\\OpenCV\\haarcascades\\haarcascade_frontalface_default.xml\" on my machine." << endl;
 		cout << "(For others) Please adjust accordingly to your own loacation." << endl;
 		cout << "(Use \"haarcascade_frontalcatface.xml\" for cats!)" << endl;

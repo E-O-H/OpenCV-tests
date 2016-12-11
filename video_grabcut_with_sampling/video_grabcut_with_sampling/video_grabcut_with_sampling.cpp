@@ -72,8 +72,8 @@ int main() {
 
     float fg_rect1_ratio_h = 0.8;
     float fg_rect1_ratio_w = 0.1;
-    float fg_rect2_ratio_h = 0.3;
-    float fg_rect2_ratio_w = 0.4;
+    float fg_rect2_ratio_h = 0.2;
+    float fg_rect2_ratio_w = 0.5;
     cv::Rect fg_rect1(mask.cols / 2 - mask.cols * fg_rect1_ratio_w / 2,
         mask.rows * (1 - fg_rect1_ratio_h),
         mask.cols * fg_rect1_ratio_w,
