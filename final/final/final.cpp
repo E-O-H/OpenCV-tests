@@ -60,6 +60,7 @@
 #define FACE_RATIO_X 0.5 // foreground rectangle / facial recognition output rectangle
 #define FACE_RATIO_Y 1.2
 #define FACE_MOVE_THRESH 32
+#define FACE_BG_DIST 32
 #define HAAR_CASCADE_PATH ".\\haarcascade_frontalface_alt.xml" // path of the pre-trained haarcascade.
 
 int main() {
@@ -128,8 +129,8 @@ int main() {
     cv::Mat bg_area3 = mask(bg_rect3);
     cv::Mat bg_area4 = mask(bg_rect4);
     // mark as background
-    bg_area1.setTo(cv::GC_BGD);
-    bg_area2.setTo(cv::GC_BGD);
+    /*bg_area1.setTo(cv::GC_BGD);
+    bg_area2.setTo(cv::GC_BGD);*/
     bg_area3.setTo(cv::GC_BGD);
     bg_area4.setTo(cv::GC_BGD);
     // Stretched rectangles for drawing on result
@@ -198,12 +199,21 @@ int main() {
                                   mask.rows - std::max(userFace.y + 0.5 * (1 - FACE_RATIO_Y) * userFace.width, 0.));
             if (abs(fg_rect1_mod.x - fg_rect1.x) < FACE_MOVE_THRESH &&
                 abs(fg_rect1_mod.y - fg_rect1.y) < FACE_MOVE_THRESH) {
-                fg_rect1 = fg_rect1_mod;
                 faceUpdated = true;
-            } 
+                fg_rect1 = fg_rect1_mod;
+                
+                bg_rect1.width = std::max(userFace.x - FACE_BG_DIST, 0);
+                bg_rect2.width = std::max(mask.cols - userFace.x - userFace.width - FACE_BG_DIST, 0);
+                bg_rect2.x = mask.cols - bg_rect2.width;
+            }
         }
         fg_area1 = mask_mod(fg_rect1);
         fg_area1.setTo(cv::GC_FGD);
+
+        bg_area1 = mask_mod(bg_rect1);
+        bg_area2 = mask_mod(bg_rect2);
+        bg_area1.setTo(cv::GC_BGD);
+        bg_area2.setTo(cv::GC_BGD);
 
         cv::grabCut(sample,    // input sample of the original frame
             mask_mod,   // mask and segmentation result
@@ -233,17 +243,17 @@ int main() {
         cv::rectangle(foreground_sample, bg_rect3, cv::Scalar(0, 0, 255), 1);
         cv::rectangle(foreground_sample, bg_rect4, cv::Scalar(0, 0, 255), 1);
         //cv::rectangle(foreground, rectangle_stretched, cv::Scalar(255, 255, 0), 1); // Outer rectangle
-        cv::rectangle(foreground, fg_rect1_stretched, cv::Scalar(255, 255, 0), 1);
+        /*cv::rectangle(foreground, fg_rect1_stretched, cv::Scalar(255, 255, 0), 1);
         cv::rectangle(foreground, fg_rect2_stretched, cv::Scalar(255, 255, 0), 1);
         cv::rectangle(foreground, bg_rect1_stretched, cv::Scalar(0, 0, 255), 1);
         cv::rectangle(foreground, bg_rect2_stretched, cv::Scalar(0, 0, 255), 1);
         cv::rectangle(foreground, bg_rect3_stretched, cv::Scalar(0, 0, 255), 1);
-        cv::rectangle(foreground, bg_rect4_stretched, cv::Scalar(0, 0, 255), 1);
+        cv::rectangle(foreground, bg_rect4_stretched, cv::Scalar(0, 0, 255), 1);*/
         for (auto face : faces) {
-            cv::rectangle(foreground_sample, face, CV_RGB(0, 255, 0), 1);
+            cv::rectangle(foreground_sample, face, CV_RGB(255, 0, 0), 1);
             int pos_x = std::max(face.tl().x - 10, 0);
             int pos_y = std::max(face.tl().y - 10, 0);
-            cv::putText(foreground_sample, "THIS IS A FACE", cv::Point(pos_x, pos_y), cv::FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0, 255, 0), 2.0);
+            cv::putText(foreground_sample, "HERE IS A FACE", cv::Point(pos_x, pos_y), cv::FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0, 255, 0), 2.0);
         }
         if (faceUpdated) {
             cv::rectangle(foreground_sample, userFace, CV_RGB(0, 0, 255), 3);
