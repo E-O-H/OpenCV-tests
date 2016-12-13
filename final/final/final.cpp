@@ -57,7 +57,7 @@
 #include <cmath>
 
 #define RATIO 2 // frame_resolution / sample_resolution
-#define FACE_RATIO_X 0.5 // foreground rectangle / facial recognition output rectangle
+#define FACE_RATIO_X 0.4 // foreground rectangle / facial recognition output rectangle
 #define FACE_RATIO_Y 1.2
 #define FACE_MOVE_THRESH 32
 #define FACE_BG_DIST 32
@@ -85,7 +85,7 @@ int main() {
     float fg_rect1_ratio_h = 0.8;
     float fg_rect1_ratio_w = 0.1;
     float fg_rect2_ratio_h = 0.2;
-    float fg_rect2_ratio_w = 0.5;
+    float fg_rect2_ratio_w = 0.4;
     cv::Rect fg_rect1(mask.cols / 2 - mask.cols * fg_rect1_ratio_w / 2,
         mask.rows * (1 - fg_rect1_ratio_h),
         mask.cols * fg_rect1_ratio_w,
