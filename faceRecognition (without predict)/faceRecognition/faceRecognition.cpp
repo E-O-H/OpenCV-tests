@@ -74,6 +74,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 using namespace cv;
 using namespace std;
@@ -213,6 +214,12 @@ int main(int argc, const char *argv[]) {
 			// And now put it into the image:
 			putText(original, box_text, Point(pos_x, pos_y), FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0, 255, 0), 2.0);
 		}
+        if (!faces.empty()) {
+            cv::Rect userFace = *std::max_element(faces.begin(), faces.end(),
+                                          [](auto a, auto b) {return a.area() < b.area(); });
+            rectangle(original, userFace, CV_RGB(125, 125, 255), 5);
+        }
+        
 		// Show the result:
 		imshow("face_recognizer", original);
 		// And display it:
