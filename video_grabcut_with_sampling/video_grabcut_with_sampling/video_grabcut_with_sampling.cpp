@@ -154,10 +154,6 @@ int main() {
     bg_rect4_stretched.width = bg_rect4.width  * RATIO;
     cv::Mat bgModel, fgModel; // the models (internally used by algorithm)
 
-    // Load background image
-    cv::Mat background = cv::imread("D:\\Billy\\b±à³ÌÁ·Ï°\\C++\\OpenCV tests\\video_grabcut_with_sampling\\background.png");
-    cv::resize(background, background, frame.size()); // resize to camera feed dimention
-
     while (true) {
         cap >> frame;
         if (frame.empty()) break; // end of video stream

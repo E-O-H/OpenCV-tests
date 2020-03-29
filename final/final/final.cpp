@@ -57,11 +57,12 @@
 #include <cmath>
 
 #define RATIO 2 // frame_resolution / sample_resolution
-#define FACE_RATIO_X 0.4 // foreground rectangle / facial recognition output rectangle
-#define FACE_RATIO_Y 1.2
+#define FACE_RATIO_X 0.55 // foreground rectangle / facial recognition output rectangle
+#define FACE_RATIO_Y 1.3
 #define FACE_MOVE_THRESH 32
 #define FACE_BG_DIST 32
 #define HAAR_CASCADE_PATH ".\\haarcascade_frontalface_alt.xml" // path of the pre-trained haarcascade.
+#define BACKGROUND_PATH ".\\background.png" // path of the pre-trained haarcascade.
 
 int main() {
     cv::VideoCapture cap;
@@ -84,7 +85,7 @@ int main() {
 
     float fg_rect1_ratio_h = 0.8;
     float fg_rect1_ratio_w = 0.1;
-    float fg_rect2_ratio_h = 0.2;
+    float fg_rect2_ratio_h = 0.15;
     float fg_rect2_ratio_w = 0.4;
     cv::Rect fg_rect1(mask.cols / 2 - mask.cols * fg_rect1_ratio_w / 2,
         mask.rows * (1 - fg_rect1_ratio_h),
@@ -167,8 +168,10 @@ int main() {
     cv::Mat bgModel, fgModel; // the models (internally used by algorithm)
 
     // Load background image
-    cv::Mat background = cv::imread("D:\\Billy\\b±‡≥Ã¡∑œ∞\\C++\\OpenCV tests\\video_grabcut_with_sampling\\background.png");
+    cv::Mat background = cv::imread(BACKGROUND_PATH);
     cv::resize(background, background, frame.size()); // resize to camera feed dimention
+
+    cv::Mat foreground(frame.size(), CV_8UC3, cv::Scalar(255, 255, 255));
 
     // Initialize facial recognition
     std::string fn_haar = HAAR_CASCADE_PATH;
@@ -231,9 +234,8 @@ int main() {
         // Stretch the resulting mask to original resolution
         cv::resize(result, result, frame.size());
         // Generate output image
-        cv::Mat foreground(frame.size(), CV_8UC3, cv::Scalar(255, 255, 255));
+        background.copyTo(foreground);
         frame.copyTo(foreground, result); // bg pixels not copied
-
 
         // draw rectangles
         cv::rectangle(foreground_sample, fg_rect1, cv::Scalar(255, 255, 0), 1);
@@ -259,8 +261,9 @@ int main() {
             cv::rectangle(foreground_sample, userFace, CV_RGB(0, 0, 255), 3);
         }
         // display result
-        cv::imshow("video cut sample", foreground_sample);
-        cv::imshow("video cut", foreground);
+        cv::imshow("Internal processing", foreground_sample);
+        cv::imshow("Output", foreground);
+        cv::imshow("Original sample", sample);
         if (cv::waitKey(1) == 27) break; // press ESC to exit
     }
     return 0;
